@@ -1,0 +1,7 @@
+#MySQL
+
+MySQL:
+    SQLport: "3306"
+    SQLDatabase: "PPRPG"
+    UseAccount: "root"
+    UsePassword: "ppodds963821"
