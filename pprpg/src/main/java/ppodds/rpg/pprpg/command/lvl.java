@@ -10,8 +10,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
+import net.minecraft.server.v1_10_R1.*;
 import ppodds.rpg.pprpg.PPRPG;
 import ppodds.rpg.pprpg.mysql.MySQL;
 
@@ -49,6 +52,16 @@ public class lvl implements CommandExecutor
 				stmt.close();
 				con.close();
 				
+
+				
+				IChatBaseComponent icbc = ChatSerializer.a("{\"text\": \"\",\"extra\":[{\"text\": \"§a[分配點數]\",\"clickEvent\": {\"action\": \"run_command\",\"value\": \"/pt\"}}]}");
+				PacketPlayOutChat packet = new PacketPlayOutChat(icbc, (byte) 1);
+				CraftPlayer cp = (CraftPlayer)p;
+				
+				
+				
+
+				
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&2==============================&f基本屬性&2=============================="));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a等級 ： &f" ));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a經驗 ： &f" + Exp));
@@ -57,13 +70,19 @@ public class lvl implements CommandExecutor
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aStr ： &f" + Str));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aAgi ： &f" + Agi));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aInt ： &f" + Int));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用點數 ： &f" + Point));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用點數 ： &f" + Point ));
+				cp.getHandle().playerConnection.sendPacket(packet);
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&2====================================================================="));
 			}
 			catch (SQLException e)
 			{
 				pr.getLogger().warning(e.toString());
 			}
+			catch (Exception e)
+			{
+				pr.getLogger().warning(e.toString());
+			}
+			
 		}
 		
 		
