@@ -54,7 +54,7 @@ public class lvl implements CommandExecutor
 				
 
 				
-				IChatBaseComponent icbc = ChatSerializer.a("{\"text\": \"\",\"extra\":[{\"text\": \"§a[分配點數]\",\"clickEvent\": {\"action\": \"run_command\",\"value\": \"/pt\"}}]}");
+				IChatBaseComponent icbc = ChatSerializer.a("{\"text\": \" \",\"extra\":[{\"text\": \"§a[分配點數]\",\"clickEvent\": {\"action\": \"run_command\",\"value\": \"/pt\"}}]}");
 				PacketPlayOutChat packet = new PacketPlayOutChat(icbc, (byte) 1);
 				CraftPlayer cp = (CraftPlayer)p;
 				

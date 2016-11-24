@@ -24,6 +24,7 @@ public class PlayerJoin implements Listener
 	public void onPlayerJoin(PlayerJoinEvent e)
 	{
 		Player p = e.getPlayer();
+		p.setHealthScale(20.0);
 		
 		try
 		{

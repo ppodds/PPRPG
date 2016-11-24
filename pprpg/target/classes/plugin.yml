@@ -1,8 +1,8 @@
 name: PPRPG
 main: ppodds.rpg.pprpg.PPRPG
-version: 0.0.2
+version: 0.0.3
 commands:
     lvl:
         description: 查看角色屬性
     pt:
-        description: 分配角色屬性
+        description: 分配角色屬性點
