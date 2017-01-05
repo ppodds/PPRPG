@@ -17,6 +17,7 @@ import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_10_R1.*;
 import ppodds.rpg.pprpg.PPRPG;
 import ppodds.rpg.pprpg.mysql.MySQL;
+import ppodds.rpg.pprpg.skill.mana.Mana;
 
 public class lvl implements CommandExecutor
 {
@@ -30,7 +31,6 @@ public class lvl implements CommandExecutor
 			int Str = 0;
 			int Agi = 0;
 			int Int = 0;
-			int Exp = 0;
 			int Point = 0;
 			
 			Player p = (Player) sender;
@@ -45,7 +45,6 @@ public class lvl implements CommandExecutor
 				Str = rs.getInt("筋力");
 				Agi = rs.getInt("敏捷");
 				Int = rs.getInt("智力");
-				Exp = rs.getInt("經驗");
 				Point = rs.getInt("點數");
 				
 				rs.close();
@@ -59,14 +58,13 @@ public class lvl implements CommandExecutor
 				CraftPlayer cp = (CraftPlayer)p;
 				
 				
-				
 
 				
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&2==============================&f基本屬性&2=============================="));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a等級 ： &f" ));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a經驗 ： &f" + Exp));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a等級 ： &f" + String.valueOf(p.getLevel())));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a經驗 ： &f" + String.valueOf(Math.floor(p.getExp() * 100) + "%")));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a生命 ： &f" + String.valueOf(p.getHealth()) + " / " + String.valueOf(p.getMaxHealth())));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a魔力 ： &f"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a魔力 ： &f" + String.valueOf(Mana.getManaBar(p).getMana()) + " / " + String.valueOf(Mana.getManaBar(p).getMaxMana())));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aStr ： &f" + Str));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aAgi ： &f" + Agi));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aInt ： &f" + Int));

@@ -1,8 +1,14 @@
 name: PPRPG
 main: ppodds.rpg.pprpg.PPRPG
-version: 0.0.3
+version: 0.0.4
 commands:
     lvl:
         description: 查看角色屬性
     pt:
         description: 分配角色屬性點
+    skill:
+        description: 分配角色天賦點
+    mana:
+        description: 魔力相關操作
+    cast:
+        description: 使用技能

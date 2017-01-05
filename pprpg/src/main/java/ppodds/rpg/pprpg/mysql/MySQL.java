@@ -46,30 +46,8 @@ public class MySQL
 		}
 		return null;
 	}
-	
 	public static void buildSQL()
 	{
-		try
-		{
-			Connection con = MySQL.con();
-			pr.getLogger().info("資料庫連線成功!");
-			Statement stmt = con.createStatement();
-			DatabaseMetaData dmd = con.getMetaData();
-            ResultSet rs = dmd.getTables(null, null, "PlayerStats", null);
-            if (!rs.next())
-            {
-            	pr.getLogger().info("玩家資料庫不存在!建立玩家資料庫中!");
-                String sql = "CREATE TABLE PlayerStats (UUID VARCHAR(50), 筋力 INT, 敏捷 INT, 智力 INT, 經驗 INT, 點數 INT)";
-                stmt.executeUpdate(sql); 
-                pr.getLogger().info("玩家資料庫建立成功!");
-            }
-            rs.close();
-            stmt.close();
-            con.close();
-		}
-		catch (SQLException e)
-		{
-			pr.getLogger().warning(e.toString());
-		}
+		PlayerDB.buildPlayerDB();
 	}
 }

@@ -4,11 +4,11 @@
 
   <groupId>ppodds.rpg</groupId>
   <artifactId>PPRPG</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>PPRPG</name>
-  <url>http://maven.apache.org</url>
+  <url>https://github.com/ppodds/PPRPG</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

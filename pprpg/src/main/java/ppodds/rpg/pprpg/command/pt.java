@@ -18,6 +18,7 @@ import net.minecraft.server.v1_10_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_10_R1.IChatBaseComponent.ChatSerializer;
 import ppodds.rpg.pprpg.PPRPG;
 import ppodds.rpg.pprpg.mysql.MySQL;
+import ppodds.rpg.pprpg.skill.mana.Mana;
 
 public class pt implements CommandExecutor
 {
@@ -67,10 +68,10 @@ public class pt implements CommandExecutor
 				CraftPlayer cp = (CraftPlayer)p;
 				
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&2==============================&f基本屬性&2=============================="));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a等級 ： &f" ));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a經驗 ： &f" + Exp));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a等級 ： &f" + String.valueOf(p.getLevel())));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a經驗 ： &f" + String.valueOf(Math.floor(p.getExp() * 100) + "%")));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a生命 ： &f" + String.valueOf(p.getHealth()) + " / " + String.valueOf(p.getMaxHealth())));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a魔力 ： &f"));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a魔力 ： &f" + String.valueOf(Mana.getManaBar(p).getMana()) + " / " + String.valueOf(Mana.getManaBar(p).getMaxMana())));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aStr ： &f" + Str));
 				cp.getHandle().playerConnection.sendPacket(packetStr);
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aAgi ： &f" + Agi));
