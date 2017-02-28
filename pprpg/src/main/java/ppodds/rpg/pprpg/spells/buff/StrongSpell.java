@@ -17,6 +17,7 @@ public class StrongSpell extends BuffSpell
 	@Override
 	public boolean cast(Player player,Skill skill)
 	{
+		//第一個試驗性技能
 		try
 		{
 			File playerData = new File(pr.getDataFolder() + File.separator + "SkillData" + File.separator + player.getUniqueId().toString() + ".yml");

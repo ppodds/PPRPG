@@ -11,6 +11,8 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,211 +29,387 @@ public class EntityDamageByEntity implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent e)
 	{
-		//玩家打生物/玩家
+		//玩家打實體
 		if (e.getDamager() instanceof Player)
 		{
 			Player p = (Player)e.getDamager();
-			try
+			//玩家打生物
+			if (e.getEntity() instanceof Creature)
 			{
-				int Str = 0;
-				int Agi = 0;
-				
-				Connection con = MySQL.con();
-				Statement stmt = con.createStatement();
-				String sql = "SELECT * FROM PLAYERSTATS WHERE UUID='" + p.getUniqueId().toString() + "'";
-				ResultSet rs = stmt.executeQuery(sql);
-				
-				rs.next();
-				Str = rs.getInt("筋力");
-				Agi = rs.getInt("敏捷");
-				
-				rs.close();
-				stmt.close();
-				con.close();
-				
-				
-				File playerData = new File(pr.getDataFolder() + File.separator + "SkillData" + File.separator + e.getDamager().getUniqueId() + ".yml");
-				YamlConfiguration y = YamlConfiguration.loadConfiguration(playerData);
-				List<String> allSkillFolderName = Skill.getAllSkillFolderName(new File(pr.getDataFolder() + File.separator + "Skill"));
-				
-				
-				double damage = e.getDamage() + Str * 0.4;
-				
-				Random random = new Random();
-				
-				if (random.nextDouble() <= Agi * 0.001)
+				//玩家打怪物
+				if (e.getEntity() instanceof Monster)
 				{
-					p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
-					
-					if (random.nextDouble() <= Agi * 0.0005)
+					try
 					{
-						p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
-						e.setDamage(damage * 4);
-						for (String skillFolderName : allSkillFolderName)
+						int Str = 0;
+						int Agi = 0;
+						int Int = 0;
+
+						Connection con = MySQL.con();
+						Statement stmt = con.createStatement();
+						String sql = "SELECT * FROM PLAYERSTATS WHERE UUID='" + p.getUniqueId().toString() + "'";
+						ResultSet rs = stmt.executeQuery(sql);
+
+						rs.next();
+						Str = rs.getInt("筋力");
+						Agi = rs.getInt("敏捷");
+						Int = rs.getInt("智力");
+
+						rs.close();
+						stmt.close();
+						con.close();
+
+
+						File playerData = new File(pr.getDataFolder() + File.separator + "SkillData" + File.separator + e.getDamager().getUniqueId() + ".yml");
+						YamlConfiguration y = YamlConfiguration.loadConfiguration(playerData);
+						List<String> allSkillFolderName = Skill.getAllSkillFolderName(new File(pr.getDataFolder() + File.separator + "Skill"));
+
+
+						double damage = e.getDamage() + Str * 0.4;
+
+						Random random = new Random();
+						
+						Monster monster = (Monster) e.getEntity();
+						String monsterName = monster.getCustomName().substring(0,monster.getCustomName().indexOf(" "));
+						int level = Integer.parseInt((monster.getCustomName().substring(monster.getCustomName().lastIndexOf(" "))).trim());
+						ppodds.rpg.pprpg.monster.Monster monsterData = ppodds.rpg.pprpg.monster.Monster.getMonster(monsterName);
+						
+						//命中公式平衡性待改良
+						double rate = Agi * 1.2 - (monsterData.getDodge() + monsterData.getDodgeScale() * level);
+
+						if (random.nextDouble() >= 1-(100/(100+rate)))
 						{
-							List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
-							for (String skillFileName : allSkillFileName)
+							if (random.nextDouble() <= Agi * 0.001)
 							{
-								File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
-								YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
-								if (y1.getString("class").equals(".buff.StrongSpell"))
+								p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+
+								if (random.nextDouble() <= Agi * 0.0005)
 								{
-									Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
-									if (y.getBoolean(skill.getName() + ".isUsing"))
+									p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+									e.setDamage(damage * 4);
+									for (String skillFolderName : allSkillFolderName)
 									{
-										double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect();
-										e.setDamage(damage2);
-										p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+										List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+										for (String skillFileName : allSkillFileName)
+										{
+											File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+											YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+											if (y1.getString("class").equals(".buff.StrongSpell"))
+											{
+												Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+												if (y.getBoolean(skill.getName() + ".isUsing"))
+												{
+													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+													e.setDamage(damage2);
+													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												}
+											}
+										}
+									}
+								}
+								else
+								{
+									e.setDamage(damage * 2);
+									for (String skillFolderName : allSkillFolderName)
+									{
+										List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+										for (String skillFileName : allSkillFileName)
+										{
+											File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+											YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+											if (y1.getString("class").equals(".buff.StrongSpell"))
+											{
+												Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+												if (y.getBoolean(skill.getName() + ".isUsing"))
+												{
+													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+													e.setDamage(damage2);
+													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												}
+											}
+										}
+									}
+								}
+							}
+							else
+							{
+
+								p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點");
+
+								if (random.nextDouble() <= Agi * 0.005)
+								{
+									p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+									e.setDamage(damage * 2);
+									for (String skillFolderName : allSkillFolderName)
+									{
+										List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+										for (String skillFileName : allSkillFileName)
+										{
+											File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+											YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+											if (y1.getString("class").equals(".buff.StrongSpell"))
+											{
+												Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+												if (y.getBoolean(skill.getName() + ".isUsing"))
+												{
+													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+													e.setDamage(damage2);
+													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												}
+											}
+										}
+									}
+								}
+								else
+								{
+									e.setDamage(damage);
+									for (String skillFolderName : allSkillFolderName)
+									{
+										List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+										for (String skillFileName : allSkillFileName)
+										{
+											File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+											YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+											if (y1.getString("class").equals(".buff.StrongSpell"))
+											{
+												Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+												if (y.getBoolean(skill.getName() + ".isUsing"))
+												{
+													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+													e.setDamage(damage2);
+													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												}
+											}
+										}
 									}
 								}
 							}
 						}
+						else
+						{
+							e.setDamage(0);
+							p.sendMessage("攻擊遭到怪物迴避!");
+						}
+						
 					}
-					else
+					catch(SQLException ex)
 					{
-						e.setDamage(damage * 2);
-						for (String skillFolderName : allSkillFolderName)
-						{
-							List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
-							for (String skillFileName : allSkillFileName)
-							{
-								File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
-								YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
-								if (y1.getString("class").equals(".buff.StrongSpell"))
-								{
-									Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
-									if (y.getBoolean(skill.getName() + ".isUsing"))
-									{
-										double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect();
-										e.setDamage(damage2);
-										p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
-									}
-								}
-							}
-						}
+						pr.getLogger().warning(ex.toString());
 					}
 				}
+				//玩家打其他生物
 				else
 				{
-				
-					p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點");
-					
-					if (random.nextDouble() <= Agi * 0.005)
+					try
 					{
-						p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點)");
-						e.setDamage(damage * 2);
-						for (String skillFolderName : allSkillFolderName)
+						int Str = 0;
+						int Agi = 0;
+						int Int = 0;
+
+						Connection con = MySQL.con();
+						Statement stmt = con.createStatement();
+						String sql = "SELECT * FROM PLAYERSTATS WHERE UUID='" + p.getUniqueId().toString() + "'";
+						ResultSet rs = stmt.executeQuery(sql);
+
+						rs.next();
+						Str = rs.getInt("筋力");
+						Agi = rs.getInt("敏捷");
+						Int = rs.getInt("智力");
+
+						rs.close();
+						stmt.close();
+						con.close();
+
+
+						File playerData = new File(pr.getDataFolder() + File.separator + "SkillData" + File.separator + e.getDamager().getUniqueId() + ".yml");
+						YamlConfiguration y = YamlConfiguration.loadConfiguration(playerData);
+						List<String> allSkillFolderName = Skill.getAllSkillFolderName(new File(pr.getDataFolder() + File.separator + "Skill"));
+
+						double damage = e.getDamage() + Str * 0.4;
+
+						Random random = new Random();
+
+						if (random.nextDouble() <= Agi * 0.001)
 						{
-							List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
-							for (String skillFileName : allSkillFileName)
+							p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+
+							if (random.nextDouble() <= Agi * 0.0005)
 							{
-								File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
-								YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
-								if (y1.getString("class").equals(".buff.StrongSpell"))
+								p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+								e.setDamage(damage * 4);
+								for (String skillFolderName : allSkillFolderName)
 								{
-									Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
-									if (y.getBoolean(skill.getName() + ".isUsing"))
+									List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+									for (String skillFileName : allSkillFileName)
 									{
-										double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect();
-										e.setDamage(damage2);
-										p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+										File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+										YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+										if (y1.getString("class").equals(".buff.StrongSpell"))
+										{
+											Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+											if (y.getBoolean(skill.getName() + ".isUsing"))
+											{
+												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+												e.setDamage(damage2);
+												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+											}
+										}
+									}
+								}
+							}
+							else
+							{
+								e.setDamage(damage * 2);
+								for (String skillFolderName : allSkillFolderName)
+								{
+									List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+									for (String skillFileName : allSkillFileName)
+									{
+										File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+										YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+										if (y1.getString("class").equals(".buff.StrongSpell"))
+										{
+											Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+											if (y.getBoolean(skill.getName() + ".isUsing"))
+											{
+												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+												e.setDamage(damage2);
+												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+											}
+										}
 									}
 								}
 							}
 						}
+						else
+						{
+
+							p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點");
+
+							if (random.nextDouble() <= Agi * 0.005)
+							{
+								p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+								e.setDamage(damage * 2);
+								for (String skillFolderName : allSkillFolderName)
+								{
+									List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+									for (String skillFileName : allSkillFileName)
+									{
+										File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+										YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+										if (y1.getString("class").equals(".buff.StrongSpell"))
+										{
+											Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+											if (y.getBoolean(skill.getName() + ".isUsing"))
+											{
+												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+												e.setDamage(damage2);
+												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+											}
+										}
+									}
+								}
+							}
+							else
+							{
+								e.setDamage(damage);
+								for (String skillFolderName : allSkillFolderName)
+								{
+									List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
+									for (String skillFileName : allSkillFileName)
+									{
+										File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
+										YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
+										if (y1.getString("class").equals(".buff.StrongSpell"))
+										{
+											Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
+											if (y.getBoolean(skill.getName() + ".isUsing"))
+											{
+												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
+												e.setDamage(damage2);
+												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+											}
+										}
+									}
+								}
+							}
+						}
+
+
 					}
-					else
+					catch(SQLException ex)
 					{
-						e.setDamage(damage);
-						for (String skillFolderName : allSkillFolderName)
-						{
-							List<String> allSkillFileName = Skill.getAllSkillFileName(new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName));
-							for (String skillFileName : allSkillFileName)
-							{
-								File skillData = new File(pr.getDataFolder() + File.separator + "Skill" + File.separator + skillFolderName + File.separator + skillFileName);
-								YamlConfiguration y1 = YamlConfiguration.loadConfiguration(skillData);
-								if (y1.getString("class").equals(".buff.StrongSpell"))
-								{
-									Skill skill = Skill.getSkill(Skill.getAllSkill(), y1.getString("name"));
-									if (y.getBoolean(skill.getName() + ".isUsing"))
-									{
-										double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect();
-										e.setDamage(damage2);
-										p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
-									}
-								}
-							}
-						}
+						pr.getLogger().warning(ex.toString());
 					}
 				}
-				
 			}
-			catch(SQLException ex)
-			{
-				pr.getLogger().warning(ex.toString());
-			}
-			
-			
 		}
-		//未測試
-		else
-		if (e.getEntity() instanceof Player)
+		//怪物打實體
+		if (e.getDamager() instanceof Monster)
 		{
-			try
+			//怪物打玩家
+			if (e.getEntity() instanceof Player)
 			{
-				Player p = (Player)e.getEntity();
-
-				int Str = 0;
-				int Agi = 0;
-
-				Connection con = MySQL.con();
-				Statement stmt = con.createStatement();
-				String sql = "SELECT * FROM PLAYERSTATS WHERE UUID='" + p.getUniqueId().toString() + "'";
-				ResultSet rs = stmt.executeQuery(sql);
-
-				rs.next();
-				Str = rs.getInt("筋力");
-				Agi = rs.getInt("敏捷");
-
-				double damage = e.getDamage() - Str * 0.5;
-
-
-				if (e.getDamager() instanceof Player)
+				try
 				{
-					String UUID = e.getDamager().getUniqueId().toString();
-					String sql2 = "SELECT * FROM PLAYERSTATS WHERE UUID='" + UUID + "'";
-					
-					rs = stmt.executeQuery(sql2);
+					Player p = (Player)e.getEntity();
+
+					int Str = 0;
+					int Agi = 0;
+
+					Connection con = MySQL.con();
+					Statement stmt = con.createStatement();
+					String sql = "SELECT * FROM PLAYERSTATS WHERE UUID='" + p.getUniqueId().toString() + "'";
+					ResultSet rs = stmt.executeQuery(sql);
+
 					rs.next();
+					Str = rs.getInt("筋力");
+					Agi = rs.getInt("敏捷");
 					
+					Monster monster = (Monster) e.getDamager();
+					String monsterName = monster.getCustomName().substring(0,monster.getCustomName().indexOf(" "));
+					int level = Integer.parseInt((monster.getCustomName().substring(monster.getCustomName().lastIndexOf(" "))).trim());
+					ppodds.rpg.pprpg.monster.Monster monsterData = ppodds.rpg.pprpg.monster.Monster.getMonster(monsterName);
+
+					double damage = (monsterData.getDamage() + monsterData.getDamageScale() * level) - Str * 0.5;
 					
-					int agi = Agi - rs.getInt("敏捷");
 					Random random = new Random();
 					
-					//骰子運算
-					if (random.nextDouble() <= 1-(100/(100+agi*0.4)))
+					//迴避公式平衡性待改良
+					double rate = (monsterData.getHit() + monsterData.getHitScale() * level) - Agi * 1.2;
+					
+					if (random.nextDouble() >= 1-(100/(100+rate)))
 					{
 						e.setDamage(0);
-						p.sendMessage("成功迴避來自" + e.getDamager().getName() + "的攻擊!");
-					}
-				}
-				else
-				{
-					if (damage > 0)
-					{
-						e.setDamage(damage);
-						p.sendMessage("受到來自" + e.getDamager().getType().toString() + "的傷害" + Math.floor(damage) + "點!");
+						p.sendMessage("成功迴避來自" + e.getDamager().getCustomName() + "的攻擊!");
 					}
 					else
 					{
-						e.setDamage(1);
-						p.sendMessage("受到來自" + e.getDamager().getType().toString() + "的傷害" + 1 + "點!");
+						if (damage > 0)
+						{
+							e.setDamage(damage);
+							p.sendMessage("受到來自" + e.getDamager().getCustomName() + "的傷害" + Math.floor(damage) + "點!");
+						}
+						else
+						{
+							e.setDamage(1);
+							p.sendMessage("受到來自" + e.getDamager().getCustomName() + "的傷害" + 1 + "點!");
+						}
 					}
 				}
+				catch (SQLException ex)
+				{
+					pr.getLogger().warning(ex.toString());
+				}
 			}
-			catch (SQLException ex)
+			//怪物打其他實體
+			else
 			{
-				pr.getLogger().warning(ex.toString());
+				Monster monster = (Monster) e.getDamager();
+				String monsterName = monster.getCustomName().substring(0,monster.getCustomName().indexOf(" "));
+				int level = Integer.parseInt((monster.getCustomName().substring(monster.getCustomName().lastIndexOf(" "))).trim());
+				ppodds.rpg.pprpg.monster.Monster monsterData = ppodds.rpg.pprpg.monster.Monster.getMonster(monsterName);
+				e.setDamage(monsterData.getDamage() + monsterData.getDamageScale() * level);
 			}
 		}
 	}

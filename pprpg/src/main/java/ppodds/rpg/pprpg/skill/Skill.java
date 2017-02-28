@@ -16,6 +16,7 @@ import ppodds.rpg.pprpg.PPRPG;
 
 public class Skill
 {
+	//方便資料操作用類別
 	private static final PPRPG pr = (PPRPG) Bukkit.getPluginManager().getPlugin("PPRPG");
 	
 	private String name;
@@ -37,8 +38,11 @@ public class Skill
 	private int nextLevelCooldown;
 	private int durationBase;
 	private int nextLevelDuration;
+	private double strScale;
+	private double agiScale;
+	private double intScale;
 	
-	private Skill(String name,String type,int maxLevel,String skillReq,int skillReqLevel,boolean needsPer,String per,String msg,int index,String icon,List<String> iconLore,int effectBase,int nextLevelEffect,int manaBase,int nextLevelMana,int cooldownBase,int nextLevelCooldown,int durationBase,int nextLevelDuration)
+	private Skill(String name,String type,int maxLevel,String skillReq,int skillReqLevel,boolean needsPer,String per,String msg,int index,String icon,List<String> iconLore,int effectBase,int nextLevelEffect,int manaBase,int nextLevelMana,int cooldownBase,int nextLevelCooldown,int durationBase,int nextLevelDuration,double strScale,double agiScale,double intScale)
 	{
 		this.name = name;
 		this.type = type;
@@ -59,6 +63,9 @@ public class Skill
 		this.nextLevelCooldown = nextLevelCooldown;
 		this.durationBase = durationBase;
 		this.nextLevelCooldown = nextLevelDuration;
+		this.strScale = strScale;
+		this.agiScale = agiScale;
+		this.intScale = intScale;
 	}
 
 	public static ArrayList<Skill> getAllSkill()
@@ -94,8 +101,11 @@ public class Skill
 				int nextLevelCooldown = data.getInt("attributes.cooldown-scale");
 				int durationBase = data.getInt("attributes.duration-base");
 				int nextLevelDuration = data.getInt("attributes.duration-scale");
+				double strScale = data.getDouble("attributes.str-scale");
+				double agiScale = data.getDouble("attributes.agi-scale");
+				double intScale = data.getDouble("attributes.int-scale");
 
-				Skill skillO = new Skill(name, type, maxLevel, skillReq, skillReqLevel, needsPer, per, msg, index, icon, iconLore, effectBase, nextLevelEffect, manaBase, nextLevelMana, cooldownBase, nextLevelCooldown,durationBase,nextLevelDuration);
+				Skill skillO = new Skill(name, type, maxLevel, skillReq, skillReqLevel, needsPer, per, msg, index, icon, iconLore, effectBase, nextLevelEffect, manaBase, nextLevelMana, cooldownBase, nextLevelCooldown,durationBase,nextLevelDuration,strScale,agiScale,intScale);
 				
 				skillO.setSkillReq(Skill.checkSkillReq(skillO));
 				allSkill.add(skillO);
@@ -341,20 +351,54 @@ public class Skill
 		this.nextLevelCooldown = nextLevelCooldown;
 	}
 
-	public int getDurationBase() {
+	public int getDurationBase()
+	{
 		return durationBase;
 	}
 
-	public int getNextLevelDuration() {
+	public int getNextLevelDuration()
+	{
 		return nextLevelDuration;
 	}
 
-	public void setDurationBase(int durationBase) {
+	public void setDurationBase(int durationBase)
+	{
 		this.durationBase = durationBase;
 	}
 
-	public void setNextLevelDuration(int nextLevelDuration) {
+	public void setNextLevelDuration(int nextLevelDuration)
+	{
 		this.nextLevelDuration = nextLevelDuration;
+	}
+
+	public double getStrScale()
+	{
+		return strScale;
+	}
+
+	public double getAgiScale()
+	{
+		return agiScale;
+	}
+
+	public double getIntScale()
+	{
+		return intScale;
+	}
+
+	public void setStrScale(double strScale)
+	{
+		this.strScale = strScale;
+	}
+
+	public void setAgiScale(double agiScale)
+	{
+		this.agiScale = agiScale;
+	}
+
+	public void setIntScale(double intScale)
+	{
+		this.intScale = intScale;
 	}
 
 }

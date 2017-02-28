@@ -24,7 +24,7 @@ public class MySQL
 	    	String Account = pr.getConfig().getString("MySQL.UseAccount");
 	    	String Password = pr.getConfig().getString("MySQL.UsePassword");
 	    	
-	        String conUrl = "jdbc:mysql://localhost:" + port + "/" + Database ;
+	        String conUrl = "jdbc:mysql://localhost:" + port + "/" + Database + "?useSSL=false";
 	        
 	        try
 	        {

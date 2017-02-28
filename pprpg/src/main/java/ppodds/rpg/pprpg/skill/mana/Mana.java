@@ -10,6 +10,7 @@ import ppodds.rpg.pprpg.PPRPG;
 
 public class Mana
 {
+	//魔力條的外部控制
 	private static HashMap<String,ManaBar> manaBars = new HashMap<String,ManaBar>();
 	private static final PPRPG pr = (PPRPG) Bukkit.getPluginManager().getPlugin("PPRPG");
 	

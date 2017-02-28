@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 public class ManaBar
 {
+	//魔力條的資料所在
 	private Player player;
 	private int maxMana;
 	private int regenAmount;

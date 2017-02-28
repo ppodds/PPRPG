@@ -28,7 +28,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Program Files/Java/mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar"/>
-	<classpathentry kind="lib" path="D:/ppodds/plugin test/1.10.2/spigot-1.10.2.jar">
+	<classpathentry kind="lib" path="D:/ppodds/plugin test/1.11.2/spigot-1.11.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="https://hub.spigotmc.org/javadocs/spigot/"/>
 		</attributes>
