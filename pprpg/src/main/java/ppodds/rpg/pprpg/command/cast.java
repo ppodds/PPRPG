@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import ppodds.rpg.pprpg.PPRPG;
 import ppodds.rpg.pprpg.skill.Skill;
+import ppodds.rpg.pprpg.skill.mana.Mana;
 import ppodds.rpg.pprpg.spells.Spell;
 
 public class cast implements CommandExecutor
@@ -60,6 +61,7 @@ public class cast implements CommandExecutor
 										Spell s = (Spell) c.newInstance();
 										s.cast(p, skill);
 										p.sendMessage("使用了" + skill.getName() + ChatColor.WHITE + "!");
+										Mana.removeMana(p, skill.getManaBase() + skill.getNextLevelMana() * y.getInt(y1.getString("name") + ".level"));
 									}
 
 									catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)

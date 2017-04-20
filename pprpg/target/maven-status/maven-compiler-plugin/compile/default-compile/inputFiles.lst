@@ -1,3 +1,5 @@
+D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\monster\spawnBoss.java
+D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\event\PlayerLevelChange.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\spells\buff\BuffSpell.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\command\mana.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\monster\Monster.java
@@ -12,6 +14,7 @@ D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\command\lvl
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\event\EntityDamageByEntity.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\spells\buff\StrongSpell.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\command\skill.java
+D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\event\EntityDeath.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\command\cast.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\mysql\PlayerDB.java
 D:\ppodds\java\repository\PPRPG\PPRPG\src\main\java\ppodds\rpg\pprpg\spells\Spell.java

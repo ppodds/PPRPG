@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import ppodds.rpg.pprpg.PPRPG;
+import ppodds.rpg.pprpg.mysql.MySQL;
 import ppodds.rpg.pprpg.skill.Skill;
 
 
@@ -31,6 +36,13 @@ import ppodds.rpg.pprpg.skill.Skill;
 public class skill implements CommandExecutor
 {
 	private final static PPRPG pr = (PPRPG) Bukkit.getPluginManager().getPlugin("PPRPG");
+
+	int Str = 0;
+	int Agi = 0;
+	int Int = 0;
+	int Exp = 0;
+	int Point = 0;
+	int SkillPoint = 0;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
@@ -92,6 +104,20 @@ public class skill implements CommandExecutor
 				Skill skill = Skill.getSkill(Skill.getAllSkill(), args[1]);
 				try
 				{
+					Connection con = MySQL.con();
+					Statement stmt = con.createStatement();
+					String sql = "SELECT * FROM PLAYERSTATS WHERE UUID='" + p.getUniqueId().toString() + "'";
+					ResultSet rs = stmt.executeQuery(sql);
+					rs.next();
+					Str = rs.getInt("筋力");
+					Agi = rs.getInt("敏捷");
+					Int = rs.getInt("智力");
+					Point = rs.getInt("能力點");
+					SkillPoint = rs.getInt("技能點");
+					rs.close();
+					stmt.close();
+					con.close();
+
 					if (p.getLevel() >= skill.getSkillReqLevel())
 					{
 						if (!skill.getSkillReq().equals("無"))
@@ -100,45 +126,83 @@ public class skill implements CommandExecutor
 							{
 								if (skill.isNeedsPer() && p.hasPermission(skill.getPer()))
 								{
-									if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
+									if (SkillPoint>0)
 									{
-										p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
-									}
-									else
-									{
-										if (y.getBoolean(skill.getName() + ".learn"))
+										if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
 										{
-											y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
-											y.save(f);
+											p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
 										}
 										else
 										{
-											y.set(skill.getName() + ".learn", true);
-											y.set(skill.getName() + ".level", 1);
-											y.save(f);
+											if (y.getBoolean(skill.getName() + ".learn"))
+											{
+												y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
+												y.save(f);
+												Connection con1 = MySQL.con();
+												Statement stmt1 = con1.createStatement();
+												String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+												stmt1.executeUpdate(sqlStr);
+												stmt1.close();
+												con1.close();
+											}
+											else
+											{
+												y.set(skill.getName() + ".learn", true);
+												y.set(skill.getName() + ".level", 1);
+												y.save(f);
+												Connection con1 = MySQL.con();
+												Statement stmt1 = con1.createStatement();
+												String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+												stmt1.executeUpdate(sqlStr);
+												stmt1.close();
+												con1.close();
+											}
 										}
+									}
+									else
+									{
+										p.sendMessage(ChatColor.RED + "技能點不足，不可學習!");
 									}
 								}
 								else
 								if (!skill.isNeedsPer())
 								{
-									if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
+									if (SkillPoint>0)
 									{
-										p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
-									}
-									else
-									{
-										if (y.getBoolean(skill.getName() + ".learn"))
+										if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
 										{
-											y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
-											y.save(f);
+											p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
 										}
 										else
 										{
-											y.set(skill.getName() + ".learn", true);
-											y.set(skill.getName() + ".level", 1);
-											y.save(f);
+											if (y.getBoolean(skill.getName() + ".learn"))
+											{
+												y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
+												y.save(f);
+												Connection con1 = MySQL.con();
+												Statement stmt1 = con1.createStatement();
+												String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+												stmt1.executeUpdate(sqlStr);
+												stmt1.close();
+												con1.close();
+											}
+											else
+											{
+												y.set(skill.getName() + ".learn", true);
+												y.set(skill.getName() + ".level", 1);
+												y.save(f);
+												Connection con1 = MySQL.con();
+												Statement stmt1 = con1.createStatement();
+												String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+												stmt1.executeUpdate(sqlStr);
+												stmt1.close();
+												con1.close();
+											}
 										}
+									}
+									else
+									{
+										p.sendMessage(ChatColor.RED + "技能點不足，不可學習!");
 									}
 								}
 							}
@@ -147,45 +211,83 @@ public class skill implements CommandExecutor
 						{
 							if (skill.isNeedsPer() && p.hasPermission(skill.getPer()))
 							{
-								if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
+								if (SkillPoint>0)
 								{
-									p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
-								}
-								else
-								{
-									if (y.getBoolean(skill.getName() + ".learn"))
+									if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
 									{
-										y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
-										y.save(f);
+										p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
 									}
 									else
 									{
-										y.set(skill.getName() + ".learn", true);
-										y.set(skill.getName() + ".level", 1);
-										y.save(f);
+										if (y.getBoolean(skill.getName() + ".learn"))
+										{
+											y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
+											y.save(f);
+											Connection con1 = MySQL.con();
+											Statement stmt1 = con1.createStatement();
+											String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+											stmt1.executeUpdate(sqlStr);
+											stmt1.close();
+											con1.close();
+										}
+										else
+										{
+											y.set(skill.getName() + ".learn", true);
+											y.set(skill.getName() + ".level", 1);
+											y.save(f);
+											Connection con1 = MySQL.con();
+											Statement stmt1 = con1.createStatement();
+											String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+											stmt1.executeUpdate(sqlStr);
+											stmt1.close();
+											con1.close();
+										}
 									}
+								}
+								else
+								{
+									p.sendMessage(ChatColor.RED + "技能點不足，不可學習!");
 								}
 							}
 							else
 							if (!skill.isNeedsPer())
 							{
-								if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
+								if (SkillPoint>0)
 								{
-									p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
-								}
-								else
-								{
-									if (y.getBoolean(skill.getName() + ".learn"))
+									if (y.getInt(skill.getName() + ".level") >= skill.getMaxLevel())
 									{
-										y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
-										y.save(f);
+										p.sendMessage(ChatColor.RED + "技能等級已滿，不可學習!");
 									}
 									else
 									{
-										y.set(skill.getName() + ".learn", true);
-										y.set(skill.getName() + ".level", 1);
-										y.save(f);
+										if (y.getBoolean(skill.getName() + ".learn"))
+										{
+											y.set(skill.getName() + ".level", y.getInt(skill.getName() + ".level") + 1 );
+											y.save(f);
+											Connection con1 = MySQL.con();
+											Statement stmt1 = con1.createStatement();
+											String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+											stmt1.executeUpdate(sqlStr);
+											stmt1.close();
+											con1.close();
+										}
+										else
+										{
+											y.set(skill.getName() + ".learn", true);
+											y.set(skill.getName() + ".level", 1);
+											y.save(f);
+											Connection con1 = MySQL.con();
+											Statement stmt1 = con1.createStatement();
+											String sqlStr = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + Point + ",技能點=" + (SkillPoint-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+											stmt1.executeUpdate(sqlStr);
+											stmt1.close();
+											con1.close();
+										}
 									}
+								}
+								else
+								{
+									p.sendMessage(ChatColor.RED + "技能點不足，不可學習!");
 								}
 							}
 						}
@@ -194,6 +296,10 @@ public class skill implements CommandExecutor
 					{
 						p.sendMessage(ChatColor.RED + "等級不足，不可學習!");
 					}
+				}
+				catch (SQLException e)
+				{
+					pr.getLogger().warning(e.toString());
 				}
 				catch (IOException e)
 				{

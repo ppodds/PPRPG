@@ -34,6 +34,7 @@ public class pt implements CommandExecutor
 		int Int = 0;
 		int Exp = 0;
 		int Point = 0;
+		int SkillPoint = 0;
 		
 		if (label.equalsIgnoreCase("pt") &&  sender instanceof Player && args.length == 0)
 		{
@@ -50,8 +51,8 @@ public class pt implements CommandExecutor
 				Str = rs.getInt("筋力");
 				Agi = rs.getInt("敏捷");
 				Int = rs.getInt("智力");
-				Exp = rs.getInt("經驗");
-				Point = rs.getInt("點數");
+				Point = rs.getInt("能力點");
+				SkillPoint = rs.getInt("技能點");
 				
 				rs.close();
 				stmt.close();
@@ -78,7 +79,8 @@ public class pt implements CommandExecutor
 				cp.getHandle().playerConnection.sendPacket(packetAgi);
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aInt ： &f" + Int));
 				cp.getHandle().playerConnection.sendPacket(packetInt);
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用點數 ： &f" + Point ));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用能力點 ： &f" + Point ));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用技能點 ： &f" + SkillPoint ));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&2====================================================================="));
 			}
 			catch (SQLException e)
@@ -110,8 +112,8 @@ public class pt implements CommandExecutor
 				Str = rs.getInt("筋力");
 				Agi = rs.getInt("敏捷");
 				Int = rs.getInt("智力");
-				Exp = rs.getInt("經驗");
-				Point = rs.getInt("點數");
+				Point = rs.getInt("能力點");
+				SkillPoint = rs.getInt("技能點");
 				rs.close();
 				
 				switch (arg)
@@ -119,15 +121,17 @@ public class pt implements CommandExecutor
 				case "str":
 					if (Point>0)
 					{
-						String sqlStr = "UPDATE PlayerStats SET 筋力=" + (Str+1) + ",敏捷=" + Agi + ",智力=" + Int + ",經驗=" + Exp + ",點數=" + (Point-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+						String sqlStr = "UPDATE PlayerStats SET 筋力=" + (Str+1) + ",敏捷=" + Agi + ",智力=" + Int + ",能力點=" + (Point-1) + ",技能點=" + SkillPoint + " WHERE UUID='" + p.getUniqueId().toString() + "'";
 						stmt.executeUpdate(sqlStr);
 						p.performCommand("pt");
 
 						stmt.close();
 						con.close();
 						
-						p.setMaxHealth(20 + Str);
-						p.sendMessage("當前最大生命有" + (20 + Str) + "點!");
+						p.setMaxHealth(20 + Str + 1);
+						p.sendMessage("當前最大生命有" + (20 + Str + 1) + "點!");
+						p.sendMessage("當前防禦有" + (Str + 1)*0.5 + "點!");
+						p.sendMessage("當前物理攻擊有" + (Str + 1)*0.4 + "點!");
 					}
 					else
 					{
@@ -138,18 +142,18 @@ public class pt implements CommandExecutor
 				case "agi":
 					if (Point>0)
 					{
-						String sqlAgi = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + (Agi+1) + ",智力=" + Int + ",經驗=" + Exp + ",點數=" + (Point-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+						String sqlAgi = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + (Agi+1) + ",智力=" + Int + ",能力點=" + (Point-1) + ",技能點=" + SkillPoint + " WHERE UUID='" + p.getUniqueId().toString() + "'";
 						stmt.executeUpdate(sqlAgi);
 						p.performCommand("pt");
 					
 						stmt.close();
 						con.close();
 						
-						p.setWalkSpeed(0.2f + Agi*0.0002f);
-						p.sendMessage("當前移動速度為" + (0.2f + Agi*0.0002f) + "!");
-						p.sendMessage("當前迴避率為" + (1-(100/(100+Agi*0.4)) + "!"));
-						p.sendMessage("當前爆擊率為" + Agi*0.001 + "!");
-						p.sendMessage("當前補充連擊率為" + Agi*0.0005 + "!");
+						p.setWalkSpeed(0.2f + (Agi + 1)*0.0002f);
+						p.sendMessage("當前移動速度為" + (0.2f + (Agi + 1)*0.0002f) + "!");
+						p.sendMessage("當前迴避/命中為" + (Agi + 1)*1.2 + "!");
+						p.sendMessage("當前爆擊率為" + (Agi + 1)*0.001 + "!");
+						p.sendMessage("當前補充連擊率為" + (Agi + 1)*0.0005 + "!");
 					}
 					else
 					{
@@ -160,9 +164,12 @@ public class pt implements CommandExecutor
 				case "int":
 					if (Point>0)
 					{
-						String sqlInt = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + (Int+1) + ",經驗=" + Exp + ",點數=" + (Point-1) + " WHERE UUID='" + p.getUniqueId().toString() + "'";
+						String sqlInt = "UPDATE PlayerStats SET 筋力=" + Str + ",敏捷=" + Agi + ",智力=" + (Int+1) + ",能力點=" + (Point-1) + ",技能點=" + SkillPoint + " WHERE UUID='" + p.getUniqueId().toString() + "'";
 						stmt.executeUpdate(sqlInt);
 						p.performCommand("pt");
+						
+						p.sendMessage("當前魔法攻擊有" + (Int + 1) + "點!");
+						p.sendMessage("當前魔力有" + (100 + Int + 1)  + "點!");
 					
 						stmt.close();
 						con.close();

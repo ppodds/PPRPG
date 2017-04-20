@@ -41,7 +41,7 @@ public class PlayerJoin implements Listener
 			if (!rs.next())
 			{
 				pr.getLogger().info("玩家資料不存在!建立玩家資料中!");
-				String sql2 = "INSERT INTO PLAYERSTATS(UUID,筋力,敏捷,智力,經驗,點數)" + " VALUES('" + p.getUniqueId().toString() + "',0,0,0,0,25 )";
+				String sql2 = "INSERT INTO PLAYERSTATS(UUID,筋力,敏捷,智力,能力點,技能點)" + " VALUES('" + p.getUniqueId().toString() + "',0,0,0,25,0 )";
 				stmt.executeUpdate(sql2);
 				pr.getLogger().info(p.getName() + "的玩家資料已被建立成功!");
 				

@@ -1,6 +1,6 @@
 name: PPRPG
 main: ppodds.rpg.pprpg.PPRPG
-version: 0.0.5
+version: 0.0.6
 commands:
     lvl:
         description: 查看角色屬性

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 import ppodds.rpg.pprpg.PPRPG;
 
@@ -25,20 +26,25 @@ public class Monster
 	private int dodge;
 	private int dodgeScale;
 	private int exp;
-	private int moneyScale;
-	private String ride;
-	private String helmet;
-	private String chestplate;
-	private String leggings;
-	private String boots;
-	private String itemInHand;
+	private int expScale;
 	private int money;
+	private int moneyScale;
+	private ItemStack helmet;
+	private ItemStack chestplate;
+	private ItemStack leggings;
+	private ItemStack boots;
+	private ItemStack itemInHand;
 	private List<HashMap<String,Double>> drop;
 	
 
-	
-	private Monster(String name, int health, int healthScale, int damage, int damageScale, int hit, int hitScale,int dodge, int dodgeScale, int exp, int moneyScale, String ride, String helmet, String chestplate, String leggings, String boots, String itemInHand, int money, List<HashMap<String, Double>> drop)
+
+
+	private Monster(String name, int health, int healthScale, int damage, int damageScale, int hit, int hitScale,
+			int dodge, int dodgeScale, int exp, int expScale, int money, int moneyScale, ItemStack helmet,
+			ItemStack chestplate, ItemStack leggings, ItemStack boots, ItemStack itemInHand,
+			List<HashMap<String, Double>> drop)
 	{
+		super();
 		this.name = name;
 		this.health = health;
 		this.healthScale = healthScale;
@@ -49,14 +55,14 @@ public class Monster
 		this.dodge = dodge;
 		this.dodgeScale = dodgeScale;
 		this.exp = exp;
+		this.expScale = expScale;
+		this.money = money;
 		this.moneyScale = moneyScale;
-		this.ride = ride;
 		this.helmet = helmet;
 		this.chestplate = chestplate;
 		this.leggings = leggings;
 		this.boots = boots;
 		this.itemInHand = itemInHand;
-		this.money = money;
 		this.drop = drop;
 	}
 
@@ -76,18 +82,18 @@ public class Monster
 		int dodge = data.getInt(monsterName + ".Dodge");
 		int dodgeScale = data.getInt(monsterName + ".DodgeScale");
 		int exp = data.getInt(monsterName + ".Exp");
-		int expScale = data.getInt(monsterName + ".ExpScale");
-		String ride = data.getString(monsterName + ".Ride");
-		String helmet = data.getString(monsterName + ".Helmet");
-		String chestplate = data.getString(monsterName + ".Chestplate");
-		String leggings = data.getString(monsterName + ".Leggings");
-		String boots = data.getString(monsterName + ".Boots");
-		String itemInHand = data.getString(monsterName + ".ItemInHand");
+		int expScale = data.getInt(monsterName + ".ExpScale");;
 		int money = data.getInt(monsterName + ".Money");
 		int moneyScale = data.getInt(monsterName + ".MoneyScale");
+		ItemStack helmet = data.getItemStack(monsterName + ".Helmet");
+		ItemStack chestplate = data.getItemStack(monsterName + ".Chestplate");
+		ItemStack leggings = data.getItemStack(monsterName + ".Leggings");
+		ItemStack boots = data.getItemStack(monsterName + ".Boots");
+		ItemStack itemInHand = data.getItemStack(monsterName + ".ItemInHand");
+		
 		List<HashMap<String,Double>> drop = (List<HashMap<String, Double>>) data.getList(monsterName + ".Drop");
 		
-		Monster monster = new Monster(name,health,healthScale,damage,damageScale,hit,hitScale,dodge,dodgeScale,exp,expScale,ride,helmet,chestplate,leggings,boots,itemInHand,money,drop);
+		Monster monster = new Monster(name,health,healthScale,damage,damageScale,hit,hitScale,dodge,dodgeScale,exp,expScale,money,moneyScale,helmet,chestplate,leggings,boots,itemInHand,drop);
 		
 		return monster;
 	}
@@ -136,29 +142,7 @@ public class Monster
 		return moneyScale;
 	}
 
-	public String getRide() {
-		return ride;
-	}
 
-	public String getHelmet() {
-		return helmet;
-	}
-
-	public String getChestplate() {
-		return chestplate;
-	}
-
-	public String getLeggings() {
-		return leggings;
-	}
-
-	public String getBoots() {
-		return boots;
-	}
-
-	public String getItemInHand() {
-		return itemInHand;
-	}
 
 	public int getMoney() {
 		return money;
@@ -167,5 +151,37 @@ public class Monster
 	public List<HashMap<String, Double>> getDrop() {
 		return drop;
 	}
+
+
+
+	public int getExpScale() {
+		return expScale;
+	}
+
+
+	public ItemStack getHelmet() {
+		return helmet;
+	}
+
+
+	public ItemStack getChestplate() {
+		return chestplate;
+	}
+
+
+	public ItemStack getLeggings() {
+		return leggings;
+	}
+
+
+	public ItemStack getBoots() {
+		return boots;
+	}
+
+
+	public ItemStack getItemInHand() {
+		return itemInHand;
+	}
+
 	
 }

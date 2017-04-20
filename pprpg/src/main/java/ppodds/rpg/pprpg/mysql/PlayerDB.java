@@ -26,7 +26,7 @@ public class PlayerDB
             if (!rs.next())
             {
             	pr.getLogger().info("玩家資料庫不存在!建立玩家資料庫中!");
-                String sql = "CREATE TABLE PlayerStats (UUID VARCHAR(50), 筋力 INT, 敏捷 INT, 智力 INT, 點數 INT)";
+                String sql = "CREATE TABLE PlayerStats (UUID VARCHAR(50), 筋力 INT, 敏捷 INT, 智力 INT, 能力點 INT, 技能點 INT)";
                 stmt.executeUpdate(sql); 
                 pr.getLogger().info("玩家資料庫建立成功!");
             }

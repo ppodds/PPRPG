@@ -32,6 +32,7 @@ public class lvl implements CommandExecutor
 			int Agi = 0;
 			int Int = 0;
 			int Point = 0;
+			int SkillPoint = 0;
 			
 			Player p = (Player) sender;
 
@@ -45,7 +46,8 @@ public class lvl implements CommandExecutor
 				Str = rs.getInt("筋力");
 				Agi = rs.getInt("敏捷");
 				Int = rs.getInt("智力");
-				Point = rs.getInt("點數");
+				Point = rs.getInt("能力點");
+				SkillPoint = rs.getInt("技能點");
 				
 				rs.close();
 				stmt.close();
@@ -68,7 +70,8 @@ public class lvl implements CommandExecutor
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aStr ： &f" + Str));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aAgi ： &f" + Agi));
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &aInt ： &f" + Int));
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用點數 ： &f" + Point ));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用能力點 ： &f" + Point ));
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', " &a可用技能點 ： &f" + SkillPoint ));
 				cp.getHandle().playerConnection.sendPacket(packet);
 				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&2====================================================================="));
 			}

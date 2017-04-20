@@ -89,6 +89,11 @@ public class CreatureSpawn implements Listener
 						Monster monster = e.getLocation().getWorld().spawn(e.getLocation(),monsterClass,c);
 						((Damageable)monster).setMaxHealth(m.getInt(monsterName + ".Health") + m.getInt(monsterName + ".HealthScale") * level);
 						((Damageable)monster).setHealth(m.getInt(monsterName + ".Health") + m.getInt(monsterName + ".HealthScale") * level);
+						monster.getEquipment().setItemInHand(m.getItemStack(monsterName + ".ItemInHand"));
+						monster.getEquipment().setHelmet(m.getItemStack(monsterName + ".Helmet"));
+						monster.getEquipment().setChestplate(m.getItemStack(monsterName + ".Chestplate"));
+						monster.getEquipment().setLeggings(m.getItemStack(monsterName + ".Leggings"));
+						monster.getEquipment().setBoots(m.getItemStack(monsterName + ".Boots"));
 					}
 					//取消事件->替換
 					e.setCancelled(true);
@@ -123,6 +128,11 @@ public class CreatureSpawn implements Listener
 						Monster monster = e.getLocation().getWorld().spawn(e.getLocation(),monsterClass,c);
 						((Damageable)monster).setMaxHealth(m.getInt(monsterName + ".Health") + m.getInt(monsterName + ".HealthScale") * level);
 						((Damageable)monster).setHealth(m.getInt(monsterName + ".Health") + m.getInt(monsterName + ".HealthScale") * level);
+						monster.getEquipment().setItemInHand(m.getItemStack(monsterName + ".ItemInHand"));
+						monster.getEquipment().setHelmet(m.getItemStack(monsterName + ".Helmet"));
+						monster.getEquipment().setChestplate(m.getItemStack(monsterName + ".Chestplate"));
+						monster.getEquipment().setLeggings(m.getItemStack(monsterName + ".Leggings"));
+						monster.getEquipment().setBoots(m.getItemStack(monsterName + ".Boots"));
 					}
 					//取消事件->替換
 					e.setCancelled(true);

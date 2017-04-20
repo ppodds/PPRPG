@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Particle;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Monster;
@@ -81,11 +82,11 @@ public class EntityDamageByEntity implements Listener
 						{
 							if (random.nextDouble() <= Agi * 0.001)
 							{
-								p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+								e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 100);
 
 								if (random.nextDouble() <= Agi * 0.0005)
 								{
-									p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+									e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 1000);
 									e.setDamage(damage * 4);
 									for (String skillFolderName : allSkillFolderName)
 									{
@@ -101,7 +102,7 @@ public class EntityDamageByEntity implements Listener
 												{
 													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 													e.setDamage(damage2);
-													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+													e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 												}
 											}
 										}
@@ -124,7 +125,7 @@ public class EntityDamageByEntity implements Listener
 												{
 													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 													e.setDamage(damage2);
-													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+													e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 												}
 											}
 										}
@@ -134,11 +135,11 @@ public class EntityDamageByEntity implements Listener
 							else
 							{
 
-								p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點");
+								e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 100);
 
 								if (random.nextDouble() <= Agi * 0.005)
 								{
-									p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+									e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 1000);
 									e.setDamage(damage * 2);
 									for (String skillFolderName : allSkillFolderName)
 									{
@@ -154,7 +155,7 @@ public class EntityDamageByEntity implements Listener
 												{
 													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 													e.setDamage(damage2);
-													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+													e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 												}
 											}
 										}
@@ -177,7 +178,7 @@ public class EntityDamageByEntity implements Listener
 												{
 													double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 													e.setDamage(damage2);
-													p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+													e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 												}
 											}
 										}
@@ -188,7 +189,7 @@ public class EntityDamageByEntity implements Listener
 						else
 						{
 							e.setDamage(0);
-							p.sendMessage("攻擊遭到怪物迴避!");
+							e.getEntity().getWorld().spawnParticle(Particle.PORTAL, e.getEntity().getLocation(), 100);
 						}
 						
 					}
@@ -231,11 +232,11 @@ public class EntityDamageByEntity implements Listener
 
 						if (random.nextDouble() <= Agi * 0.001)
 						{
-							p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+							e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 100);
 
 							if (random.nextDouble() <= Agi * 0.0005)
 							{
-								p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage * 2) + "點傷害(爆擊)!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+								e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 1000);
 								e.setDamage(damage * 4);
 								for (String skillFolderName : allSkillFolderName)
 								{
@@ -251,7 +252,7 @@ public class EntityDamageByEntity implements Listener
 											{
 												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 												e.setDamage(damage2);
-												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 											}
 										}
 									}
@@ -274,7 +275,7 @@ public class EntityDamageByEntity implements Listener
 											{
 												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 												e.setDamage(damage2);
-												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 1000);
 											}
 										}
 									}
@@ -284,11 +285,11 @@ public class EntityDamageByEntity implements Listener
 						else
 						{
 
-							p.sendMessage("你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點");
+							e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 100);
 
 							if (random.nextDouble() <= Agi * 0.005)
 							{
-								p.sendMessage("(補充連擊)你對" + e.getEntityType() + "造成了" + Math.floor(damage) + "點傷害!(原傷害:" + Math.floor(e.getDamage()) + "點)");
+								e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 1000);
 								e.setDamage(damage * 2);
 								for (String skillFolderName : allSkillFolderName)
 								{
@@ -304,7 +305,7 @@ public class EntityDamageByEntity implements Listener
 											{
 												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 												e.setDamage(damage2);
-												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 											}
 										}
 									}
@@ -327,7 +328,7 @@ public class EntityDamageByEntity implements Listener
 											{
 												double damage2 = e.getDamage() + skill.getEffectBase() + y.getInt(skill.getName() + ".level") * skill.getNextLevelEffect() + skill.getStrScale() * Str + skill.getAgiScale() * Agi + skill.getIntScale() * Int;
 												e.setDamage(damage2);
-												p.sendMessage("由於" + skill.getName() + ChatColor.WHITE + "效果，傷害提升至" + Math.floor(damage2) + "點!");
+												e.getEntity().getWorld().spawnParticle(Particle.LAVA, e.getEntity().getLocation(), 100);
 											}
 										}
 									}
@@ -381,19 +382,19 @@ public class EntityDamageByEntity implements Listener
 					if (random.nextDouble() >= 1-(100/(100+rate)))
 					{
 						e.setDamage(0);
-						p.sendMessage("成功迴避來自" + e.getDamager().getCustomName() + "的攻擊!");
+						e.getEntity().getWorld().spawnParticle(Particle.PORTAL, e.getEntity().getLocation(), 100);
 					}
 					else
 					{
 						if (damage > 0)
 						{
 							e.setDamage(damage);
-							p.sendMessage("受到來自" + e.getDamager().getCustomName() + "的傷害" + Math.floor(damage) + "點!");
+							e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 100);
 						}
 						else
 						{
 							e.setDamage(1);
-							p.sendMessage("受到來自" + e.getDamager().getCustomName() + "的傷害" + 1 + "點!");
+							e.getEntity().getWorld().spawnParticle(Particle.FLAME, e.getEntity().getLocation(), 100);
 						}
 					}
 				}
@@ -413,4 +414,5 @@ public class EntityDamageByEntity implements Listener
 			}
 		}
 	}
+	
 }
